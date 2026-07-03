@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #111111;
+  background: #f4e5dc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 4% 6%, rgba(248, 229, 220, 0.94), transparent 14rem),
+    radial-gradient(circle at 96% 7%, rgba(237, 235, 249, 0.96), transparent 13rem),
+    radial-gradient(circle at 8% 48%, rgba(247, 227, 176, 0.70), transparent 15rem),
+    radial-gradient(circle at 95% 66%, rgba(230, 240, 232, 0.76), transparent 14rem),
+    linear-gradient(180deg, #f4e5dc 0%, #f4e5dc 100%);
+  color: #111111;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+@layer components {
+  .page-shell {
+    @apply mx-auto min-h-screen w-full max-w-[430px] px-4 pb-12 pt-4;
+  }
+
+  .soft-card {
+    @apply rounded-[28px] border border-border bg-white shadow-float;
+  }
+
+  .pill-button {
+    @apply rounded-full border px-4 py-2 text-sm font-medium transition active:scale-[0.98];
+  }
+
+  .field-label {
+    @apply mb-2 block text-sm font-semibold text-primary;
+  }
+
+  .field-control {
+    @apply w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm text-primary outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10;
+  }
+}
