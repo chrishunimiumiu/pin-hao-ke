@@ -39,6 +39,20 @@ export type JoinApplication = {
   demand?: ParentRequest;
 };
 
+const genericCourseDetails = ["启蒙", "基础", "提升", "私教拼课", "其他"];
+
+export function formatCourseName(courseCategory: string, courseDetail: string) {
+  const category = courseCategory.trim();
+  const detail = courseDetail.trim();
+
+  if (!category) return detail;
+  if (!detail || detail === "其他") return category;
+  if (detail.includes(category) || category.includes(detail)) return detail;
+  if (genericCourseDetails.includes(detail)) return `${category}${detail}`;
+
+  return detail;
+}
+
 export const parentRequests: ParentRequest[] = [
   {
     id: "kejiyuan-swim",

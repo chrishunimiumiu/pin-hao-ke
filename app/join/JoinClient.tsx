@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { ConsentChecks } from "@/components/ConsentChecks";
 import { getPublicStatus, getRemainingPeople } from "@/components/RequestCard";
-import { ageRanges, timeOptions, type ParentRequest } from "@/lib/requests";
+import { ageRanges, formatCourseName, timeOptions, type ParentRequest } from "@/lib/requests";
 
 export function JoinClient({ request }: { request: ParentRequest | null }) {
   const [submitted, setSubmitted] = useState(false);
@@ -92,7 +92,7 @@ export function JoinClient({ request }: { request: ParentRequest | null }) {
           <div className="min-w-0">
             <p className="mb-3 text-sm font-semibold text-muted">你想加入：</p>
             <h2 className="break-words text-lg font-black leading-snug text-coffee">
-              {request.area}｜{request.ageRange}｜{request.courseDetail}
+              {request.area}｜{request.ageRange}｜{formatCourseName(request.courseCategory, request.courseDetail)}
             </h2>
             <div className="mt-3 space-y-2 text-sm font-semibold leading-relaxed text-taupe">
               <p>{request.availableTime}｜{request.duration}｜{request.budget}</p>

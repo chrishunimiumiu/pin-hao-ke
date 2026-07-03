@@ -1,5 +1,5 @@
 import { BeforeActionLink } from "@/components/BeforeActionLink";
-import type { DemandStatus, ParentRequest } from "@/lib/requests";
+import { formatCourseName, type DemandStatus, type ParentRequest } from "@/lib/requests";
 
 type RequestCardProps = {
   request: ParentRequest;
@@ -18,7 +18,7 @@ export function RequestCard({ request }: RequestCardProps) {
           <span className={`mt-1 h-4 w-4 shrink-0 rounded-[6px] ${getCategoryClass(request.courseCategory)}`} />
           <div className="min-w-0">
             <h3 className="break-words text-base font-black leading-snug text-coffee">
-              {request.area}｜{request.ageRange}｜{request.courseDetail}
+              {request.area}｜{request.ageRange}｜{formatCourseName(request.courseCategory, request.courseDetail)}
             </h3>
             <p className="mt-2 text-sm font-semibold leading-relaxed text-taupe">
               {request.availableTime}｜{request.duration}｜{request.budget}

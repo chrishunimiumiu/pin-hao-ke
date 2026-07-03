@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import type { JoinApplication, ParentRequest } from "@/lib/requests";
+import { formatCourseName, type JoinApplication, type ParentRequest } from "@/lib/requests";
 
 type AdminDemand = ParentRequest & {
   contact: string;
@@ -297,7 +297,7 @@ function JoinAdminCard({
     <article className="soft-card p-4">
       <h3 className="text-base font-black leading-snug text-coffee">
         {demand
-          ? `${demand.area}｜${demand.ageRange}｜${demand.courseDetail}`
+          ? `${demand.area}｜${demand.ageRange}｜${formatCourseName(demand.courseCategory, demand.courseDetail)}`
           : `需求 ID：${application.demandId}`}
       </h3>
       <div className="mt-3 space-y-1 text-sm font-semibold leading-relaxed text-taupe">
