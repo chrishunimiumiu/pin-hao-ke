@@ -32,7 +32,8 @@ export function HomeClient({ requests }: { requests: ParentRequest[] }) {
   }, [filterType]);
 
   const filteredRequests = useMemo(() => {
-    const joinableRequests = requests.filter(isJoinableRequest);
+    // Unknown or malformed expiry data must not hide an otherwise active demand.
+    const joinableRequests = requests.filter((request) => isJoinableRequest(request));
 
     if (filterType === "all" || filterValue === "全部") return joinableRequests;
     if (filterType === "area") return joinableRequests.filter((request) => request.area === filterValue);

@@ -18,8 +18,8 @@ export type ParentRequest = {
   currentPeople: number;
   targetPeople: number;
   budget: string;
-  daysLeft: number;
-  expiresAt: string;
+  daysLeft: number | null;
+  expiresAt: string | null;
   note: string;
   status: DemandStatus;
   createdAt?: string;
@@ -28,14 +28,30 @@ export type ParentRequest = {
 export function isJoinableRequest(
   request: Pick<
     ParentRequest,
-    "status" | "currentPeople" | "targetPeople" | "daysLeft"
+    "status" | "currentPeople" | "targetPeople" | "daysLeft" | "expiresAt"
   >,
 ) {
   return (
     request.status === "active" &&
     request.currentPeople < request.targetPeople &&
-    request.daysLeft > 0
+    !isExplicitlyExpired(request)
   );
+}
+
+export function isExplicitlyExpired(
+  request: Pick<ParentRequest, "status" | "daysLeft" | "expiresAt">,
+) {
+  if (request.status === "expired") return true;
+
+  if (
+    typeof request.daysLeft === "number" &&
+    Number.isFinite(request.daysLeft) &&
+    request.daysLeft <= 0
+  ) return true;
+
+  if (!request.expiresAt) return false;
+  const expiresAtTime = new Date(request.expiresAt).getTime();
+  return Number.isFinite(expiresAtTime) && expiresAtTime <= Date.now();
 }
 
 export type JoinApplicationStatus = "pending" | "approved" | "rejected";

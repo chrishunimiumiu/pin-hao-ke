@@ -1,5 +1,10 @@
 import { BeforeActionLink } from "@/components/BeforeActionLink";
-import { formatCourseName, type DemandStatus, type ParentRequest } from "@/lib/requests";
+import {
+  formatCourseName,
+  isExplicitlyExpired,
+  type DemandStatus,
+  type ParentRequest,
+} from "@/lib/requests";
 
 type RequestCardProps = {
   request: ParentRequest;
@@ -7,7 +12,7 @@ type RequestCardProps = {
 
 export function RequestCard({ request }: RequestCardProps) {
   const remainingPeople = getRemainingPeople(request);
-  const displayStatus = request.daysLeft <= 0 ? "expired" : request.status;
+  const displayStatus = isExplicitlyExpired(request) ? "expired" : request.status;
   const publicStatus = getPublicStatus(displayStatus, remainingPeople, request.currentPeople, request.targetPeople);
   const actionDisabled = ["已满员", "确认中", "已成团", "已过期"].includes(publicStatus);
   const badgeClass = getBadgeClass(publicStatus);
@@ -79,12 +84,16 @@ function getPeopleLine(
   status: string,
   currentPeople: number,
   targetPeople: number,
-  daysLeft: number,
+  daysLeft: number | null,
 ) {
   if (status === "已满员" || status === "确认中") return `目前${currentPeople}人｜目标${targetPeople}人｜平台确认中`;
   if (status === "已成团") return `目前${currentPeople}人｜目标${targetPeople}人｜已成团`;
   if (status === "已过期") return `目前${currentPeople}人｜目标${targetPeople}人｜已过期`;
-  return `目前${currentPeople}人｜目标${targetPeople}人｜成团剩余${daysLeft}天`;
+  const displayDaysLeft =
+    typeof daysLeft === "number" && Number.isFinite(daysLeft) && daysLeft > 0
+      ? daysLeft
+      : 7;
+  return `目前${currentPeople}人｜目标${targetPeople}人｜成团剩余${displayDaysLeft}天`;
 }
 
 function getCategoryClass(courseCategory: string) {

@@ -11,7 +11,11 @@ type DemandInsert = Omit<ParentRequest, "id" | "daysLeft" | "createdAt" | "expir
 
 type JoinInsert = Omit<JoinApplication, "id" | "status" | "createdAt" | "demand">;
 
-type StoredDemand = ParentRequest & {
+type StoredDemand = Omit<ParentRequest, "daysLeft" | "expiresAt"> & {
+  daysLeft?: number | null;
+  expiresAt?: string | null;
+  expires_at?: string | null;
+  expireAt?: string | null;
   contact?: string;
 };
 
@@ -201,13 +205,23 @@ export async function rejectJoinApplication(id: string) {
 
 function toPublicDemand(demand: StoredDemand): ParentRequest {
   const { contact: _contact, ...publicDemand } = demand;
+  const expiresAt = demand.expiresAt ?? demand.expires_at ?? demand.expireAt ?? null;
+  const calculatedDaysLeft = getDaysLeft(expiresAt);
+  const storedDaysLeft =
+    typeof demand.daysLeft === "number" && Number.isFinite(demand.daysLeft)
+      ? demand.daysLeft
+      : null;
+
   return {
     ...publicDemand,
-    daysLeft: getDaysLeft(demand.expiresAt),
+    expiresAt,
+    daysLeft: calculatedDaysLeft ?? storedDaysLeft,
   };
 }
 
-function getDaysLeft(expiresAt: string) {
+function getDaysLeft(expiresAt: string | null) {
+  if (!expiresAt) return null;
   const ms = new Date(expiresAt).getTime() - Date.now();
+  if (!Number.isFinite(ms)) return null;
   return Math.max(Math.ceil(ms / 86_400_000), 0);
 }
