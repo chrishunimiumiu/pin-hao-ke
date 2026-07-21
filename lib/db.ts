@@ -1,4 +1,9 @@
-import { parentRequests, type JoinApplication, type ParentRequest } from "@/lib/requests";
+import {
+  isJoinableRequest,
+  parentRequests,
+  type JoinApplication,
+  type ParentRequest,
+} from "@/lib/requests";
 
 type DemandInsert = Omit<ParentRequest, "id" | "daysLeft" | "createdAt" | "expiresAt" | "status"> & {
   contact: string;
@@ -54,15 +59,15 @@ async function supabaseRequest<T>(
 }
 
 export async function listPublicDemands(): Promise<ParentRequest[]> {
-  if (!isDatabaseConfigured()) return parentRequests;
+  if (!isDatabaseConfigured()) return parentRequests.filter(isJoinableRequest);
 
   const query = new URLSearchParams({
     select: "*",
-    status: `in.(${PUBLIC_STATUSES.join(",")})`,
+    status: "eq.active",
     order: "createdAt.desc",
   });
   const demands = await supabaseRequest<StoredDemand[]>(`demands?${query}`);
-  return demands.map(toPublicDemand);
+  return demands.map(toPublicDemand).filter(isJoinableRequest);
 }
 
 export async function getPublicDemand(id: string | null): Promise<ParentRequest | null> {

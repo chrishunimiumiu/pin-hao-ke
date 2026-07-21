@@ -7,7 +7,8 @@ type RequestCardProps = {
 
 export function RequestCard({ request }: RequestCardProps) {
   const remainingPeople = getRemainingPeople(request);
-  const publicStatus = getPublicStatus(request.status, remainingPeople, request.currentPeople, request.targetPeople);
+  const displayStatus = request.daysLeft <= 0 ? "expired" : request.status;
+  const publicStatus = getPublicStatus(displayStatus, remainingPeople, request.currentPeople, request.targetPeople);
   const actionDisabled = ["已满员", "确认中", "已成团", "已过期"].includes(publicStatus);
   const badgeClass = getBadgeClass(publicStatus);
 

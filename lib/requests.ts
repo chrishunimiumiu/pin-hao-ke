@@ -25,6 +25,19 @@ export type ParentRequest = {
   createdAt?: string;
 };
 
+export function isJoinableRequest(
+  request: Pick<
+    ParentRequest,
+    "status" | "currentPeople" | "targetPeople" | "daysLeft"
+  >,
+) {
+  return (
+    request.status === "active" &&
+    request.currentPeople < request.targetPeople &&
+    request.daysLeft > 0
+  );
+}
+
 export type JoinApplicationStatus = "pending" | "approved" | "rejected";
 
 export type JoinApplication = {

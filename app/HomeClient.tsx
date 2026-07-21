@@ -3,7 +3,13 @@
 import { useMemo, useState } from "react";
 import { BeforeActionLink } from "@/components/BeforeActionLink";
 import { RequestCard } from "@/components/RequestCard";
-import { ageRanges, areas, courseCategories, type ParentRequest } from "@/lib/requests";
+import {
+  ageRanges,
+  areas,
+  courseCategories,
+  isJoinableRequest,
+  type ParentRequest,
+} from "@/lib/requests";
 
 type FilterType = "all" | "area" | "age" | "course";
 
@@ -26,10 +32,12 @@ export function HomeClient({ requests }: { requests: ParentRequest[] }) {
   }, [filterType]);
 
   const filteredRequests = useMemo(() => {
-    if (filterType === "all" || filterValue === "全部") return requests;
-    if (filterType === "area") return requests.filter((request) => request.area === filterValue);
-    if (filterType === "age") return requests.filter((request) => request.ageRange === filterValue);
-    return requests.filter((request) => request.courseCategory === filterValue);
+    const joinableRequests = requests.filter(isJoinableRequest);
+
+    if (filterType === "all" || filterValue === "全部") return joinableRequests;
+    if (filterType === "area") return joinableRequests.filter((request) => request.area === filterValue);
+    if (filterType === "age") return joinableRequests.filter((request) => request.ageRange === filterValue);
+    return joinableRequests.filter((request) => request.courseCategory === filterValue);
   }, [filterType, filterValue, requests]);
 
   function selectFilterType(nextType: FilterType) {
@@ -105,7 +113,7 @@ export function HomeClient({ requests }: { requests: ParentRequest[] }) {
             </p>
           </div>
           <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-primary shadow-soft ring-1 ring-border">
-            共 {filteredRequests.length} 条
+            可拼 {filteredRequests.length} 条
           </span>
         </div>
 
