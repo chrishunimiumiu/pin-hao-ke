@@ -32,7 +32,7 @@ export function HomeClient({ requests }: { requests: ParentRequest[] }) {
   }, [filterType]);
 
   const filteredRequests = useMemo(() => {
-    // Unknown or malformed expiry data must not hide an otherwise active demand.
+    // Expiry metadata is informational here; active demands with capacity stay visible.
     const joinableRequests = requests.filter((request) => isJoinableRequest(request));
 
     if (filterType === "all" || filterValue === "全部") return joinableRequests;

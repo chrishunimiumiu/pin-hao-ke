@@ -28,13 +28,12 @@ export type ParentRequest = {
 export function isJoinableRequest(
   request: Pick<
     ParentRequest,
-    "status" | "currentPeople" | "targetPeople" | "daysLeft" | "expiresAt"
+    "status" | "currentPeople" | "targetPeople"
   >,
 ) {
   return (
     request.status === "active" &&
-    request.currentPeople < request.targetPeople &&
-    !isExplicitlyExpired(request)
+    request.currentPeople < request.targetPeople
   );
 }
 

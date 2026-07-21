@@ -71,6 +71,8 @@ export async function listPublicDemands(): Promise<ParentRequest[]> {
     order: "createdAt.desc",
   });
   const demands = await supabaseRequest<StoredDemand[]>(`demands?${query}`);
+  // Expiry metadata is display-only on the demand wall. Joining is gated by
+  // the persisted active status and available capacity.
   return demands.map(toPublicDemand).filter(isJoinableRequest);
 }
 
